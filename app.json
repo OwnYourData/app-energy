@@ -1,0 +1,8 @@
+{
+  "name": "Energieverbrauch",
+  "description": "beobachte deinen Resourcenverbrauch (Wasser, Strom, Gas)",
+  "repository": "https://github.com/OwnYourData/app-energy",
+  "keywords": ["ownyourdata", "resourcen", "konsum", "wasser", "strom", "gas"],
+  "website": "https://www.ownyourdata.eu",
+  "buildpacks": [{ "url": "http://github.com/virtualstaticvoid/heroku-buildpack-r" }]
+}
