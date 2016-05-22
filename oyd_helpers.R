@@ -329,7 +329,6 @@ validEmail <- function(email){
 }
 
 combineData <- function(dat1, dat2){
-        save(dat1, dat2, file='tmpDat.RData')
         data <- data.frame()
         if(nrow(dat1) == 0) {
                 data <- dat2
