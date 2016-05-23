@@ -159,7 +159,6 @@ shinyServer(function(input, output, session) {
                 curMin <- as.Date(input$dateRange[1], '%d.%m.%Y')
                 curMax <- as.Date(input$dateRange[2], '%d.%m.%Y')
                 daterange <- seq(curMin, curMax, 'days')
-                save(data, file='tmpData2.RData')
                 data <- data[!is.na(data[category]),]
                 data <- data[as.Date(data$dat) %in% daterange, ]
                 if(nrow(data) > 0) {
@@ -346,7 +345,6 @@ shinyServer(function(input, output, session) {
                                 DF <- as.data.frame(matrix(NA, ncol=4, nrow=1))
                         }
                         colnames(DF) <- c('Datum', 'Wasser', 'Strom', 'Gas')
-                        save(DF, file='tmpDF.RData')
                         DF$Datum <- as.Date(DF$Datum)
                         DF$Wasser <- as.numeric(DF$Wasser)
                         DF$Strom <- as.numeric(DF$Strom)
