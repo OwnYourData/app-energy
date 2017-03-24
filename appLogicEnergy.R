@@ -220,6 +220,8 @@ observeEvent(input$delEnergyList, {
 writeEnergyMail <- function(selItem, itemName, itemEmail, itemInterval, itemRepo){
         errMsg <- ''
         if(validEmail(itemEmail)){
+                app <- currApp()
+                
                 # lösche - falls vorhanden - den Schedulereintrag
                 deleteEnergyMail(selItem)
                 
@@ -233,7 +235,7 @@ writeEnergyMail <- function(selItem, itemName, itemEmail, itemInterval, itemRepo
                         fields=energy_fields)
                 response_structure <- list(energy_structure)
                 energyEmailText <- paste0('Beantworte dieses Mail und gib dabei den aktuellen ',
-                                          'Energieverbrauch für ', itemName, 'an.')
+                                          'Energieverbrauch für ', itemName, ' an.')
                 writeSchedulerEmail(
                         app,
                         appTitle,
