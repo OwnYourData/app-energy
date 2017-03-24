@@ -1,34 +1,76 @@
-# Energieverbrauch
-Der [OwnYourData](https://www.ownyourdata.eu) Energieverbrauch erlaubt ein periodisches Monitoring des eigenen Resourcenkonsums (Wasser, Strom, Gas).
+# <img src="https://github.com/OwnYourData/app-energy/raw/master/www/app_logo.png" width="92"> Energieverbrauch
+Wir alle verbrauchen jeden Tag Energie und wertvolle Ressourcen. Dokumentiere diesen Konsum und beobachte deinen Verbrauch im Laufe des Jahres. Dadurch wird es dir möglich frühzeitig Abweichungen zu erkennen (zB schleichender Wasserrohrbruch) und du kannst auch messen, ob sich neue Anschaffungen auf den Verbrauch auswirken (zB wie viel Strom braucht die neue elektrische Fußbodenheizung).    
+
+Mehr Infos, Screenshots und Demo: https://www.ownyourdata.eu/apps/energieverbrauch    
+
+### Dein Datentresor
+Die Energieverbrauch-App wird in einem sicheren Datentresor installiert. Üblicherweise musst du deine Daten an die Betreiber von Webservices und Apps weitergeben, um diese nutzen zu können. OwnYourData dreht den Spieß jedoch um: Du behältst all deine Daten und du verwahrst sie in deinem eigenen Datentresor. Apps (Datensammlung, Algorithmen und Visualisierung) holst du zu dir, in den Datentresor hinein.
+
+Mehr Infos und Demo: https://www.ownyourdata.eu  
+Hintergrund-Infos für Entwickler: https://www.ownyourdata.eu/developer/
+
+&nbsp;    
 
 ## Installation
 
-Die App kann gratis über den offiziellen [OwnYourData SAM](http://oyd-sam.herokuapp.com) (Store for Algorithms) installiert werden. Klicke dazu in der PIA App-Liste "Plugin installieren" und wähle "Energieverbrauch" (ID: eu.ownyourdata.energy) aus.
+Du kannst entscheiden wo du deinen Datentresor einrichten und deine Apps installieren möchtest: auf deinem persönlichen OwnYourData-Server, auf einem anderen Cloud-Dienst deiner Wahl, auf deinem eigenen Computer oder auf einem Raspberry Pi bei Dir daheim.
 
-Die Energieverbrauch-App benötigt das Shiny-Host-Service (ebenfalls verfügbar am OwnYourData SAM, ID: eu.ownyourdata.shinyhost) und [Docker](https://www.docker.com/) installiert.
+### Installation am OwnYourData-Server
+
+Diese Installation ist am einfachsten: Fordere deinen Datentresor an: https://www.ownyourdata.eu, öffne den Datentresor und klicke im *OwnYourData App Store* bei Energieverbrauch auf "Install".
+
+### Installation bei Cloud Diensten
+
+Verschiedene Cloud Dienste bieten das Hosting von [Docker](https://www.docker.com) Containern an, z.B. https://sloppy.io oder https://elastx.se. Die Energieverbrauch-App steht als Docker-Image unter dem Namen `oydeu/app-energy` auf Dockerhub hier zur Verfügung: https://hub.docker.com/r/oydeu/app-energy/.    
+Starte den Container und verbinde Dich im Konfigurations-Dialog mit deinem Datentresor.
+
+### Installation am eigenen Computer/Laptop
+
+Um die Energieverbrauch-App am eigenen Computer auszuführen, musst du zuerst [eine aktuelle Version von Docker installieren](https://www.docker.com/community-edition#/download). Starte dann die App mit folgendem Befehl:  
+`docker run -p 3838:3838 oydeu/app-energy`  
+Du kannst dann auf die App mit deinem Browser unter folgender Adresse zugreifen:  
+`http://192.168.99.100:3838`  
+  
+*Anmerkungen:*  
+* wenn du mehrere Apps verwendest, musst du unterschiedliche Ports verwenden  
+  `docker run -p 1234:3838 oydeu/app-energy` und `http://192.168.99.100:1234`
+* Docker vergibt die IP-Adresse auf deinem Computer unter der du auf die Container zugreifen kannst. Verwende folgenden Befehl, um die tatsächliche IP-Adresse festzustellen: `docker-machine ip`  
+* in diesem Blog-Artikel wird ausführlich die Installation einer App am eigenen PC beschrieben: [Ein Container voller Daten](https://www.ownyourdata.eu/2016/09/26/ein-container-voller-daten/)
+
+### Installation am Raspberry Pi
+
+Die Energieverbrauch-App steht auch für die Architektur armhf zur Verfügung. Die Installation erfolgt dann wie am Computer/Laptop jedoch unter Verwendung des Docker Image `oydeu/app-energy_armhf`.  
+  
+*Anmerkungen:*  
+* Energieverbrauch am Dockerhub: https://hub.docker.com/r/oydeu/app-energy_armhf/  
+* zur einfachen Installation von Docker am Raspberry empfehlen wir die SD-Card Images von Hypriot: http://blog.hypriot.com/downloads/
+* Befehl zum Start des Containers am Raspberry: `docker run -p 3838:3838 oydeu/app-energy_armhf`
+
+&nbsp;    
 
 
-## Verwendung
+## Datenstruktur
 
-Die App umfasst folgende Funktionen:
+Die folgenden Listen werden von der Energieverbrauch-App verwendet:
 
-* Energieverbrauch für folgende 3 Resourcen
-    * Wasser (in m^3)
-    * Strom (in kWh)
-    * Gas (in m^3)
-* Visualisierung der vorhandenen Daten zur Identifikation von Zusammenhängen
-* Einschränkung der Darstellung auf ein bestimmtes Zeitfenster
-* optional: automatisierte monatliche Emails zur Abfrage der 3 beschriebenen Resourcen
+* Typen    
+    - `name`: eindeutiger Namen für den Energie-Typ    
+    - `email`: falls angegeben die Emailadresse an die periodisch Datenanfragen geschickt werden sollen    
+    - `interval`: falls eine Emailadresse angegeben wurde enthält dieses Feld die Periodizität der Datenanfragen    
+    - `repo`: Speicherort - beginnt mit `eu.ownyourdata.energy.` und enthält am Ende eine eindeutige Kennzeichnung für die Liste      
+* [Energieaufzeichnugen]    
+    - `timestamp`: Zeistempel in Millisekunden seit 1.1.1970 UTC    
+    - `value`: aktuell verbrauchter Wert für den jeweils aufgezeichneten Energie-Typ    
+* Scheduler, Scheduler Verlauf und Scheduler Status  - siehe [service-scheduler](https://github.com/OwnYourData/service-scheduler)  
+* Info - Informationen zum Datentresor
 
+&nbsp;    
 
-## Für Entwickler  
+## Verbessere die Energieverbrauch-App
 
-Diese App wurde in [R](https://cran.r-project.org/) entwickelt und verwendet [Shiny](http://shiny.rstudio.com/). Zur Ausführung wird entweder das OwnYourData Shiny Service benötigt (siehe oben: Installation) oder es existiert ein bereits [installierter Shiny Server](https://github.com/rstudio/shiny-server/wiki/Building-Shiny-Server-from-Source). Wird ein eigener Shiny Server betrieben, kann in der PIA App-Liste mit "Register a new Plugin" das Manifest base64-encodiert hinzugefügt werden (angegeben am Beginn der Datei `server.R`) und in der App unter Konfiguration müssen die Parameter URL, App-Key und App-Secret selbst gesetzt werden.  
-Zum Ausprobieren kann die App auf [Heroku](https://www.heroku.com/) deployed werden:  
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+Bitte melde Fehler oder Vorschläge für neue Features / UX-Verbesserungen im [GitHub Issue-Tracker](https://github.com/OwnYourData/app-energy/issues) und halte dich dabei an die [Contributor Guidelines](https://github.com/twbs/ratchet/blob/master/CONTRIBUTING.md).
 
-
-## Verbessere die App
+Wenn du selbst an der App mitentwickeln möchtest, folge diesen Schritten:
 
 1. Fork it!
 2. erstelle einen Feature Branch: `git checkout -b my-new-feature`
@@ -36,6 +78,8 @@ Zum Ausprobieren kann die App auf [Heroku](https://www.heroku.com/) deployed wer
 4. Push in den Branch: `git push origin my-new-feature`
 5. Sende einen Pull Request
 
+&nbsp;    
+
 ## Lizenz
 
-MIT Lizenz 2016 - Own Your Data
+[MIT Lizenz 2017 - OwnYourData.eu](https://raw.githubusercontent.com/OwnYourData/app-energy/master/LICENSE)
