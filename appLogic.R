@@ -105,7 +105,7 @@ observeEvent(input$saveEnergyInput, {
                 repoName <- input$energyInputSelect
                 repo <- appRepos[[repoName]]
                 url <- itemsUrl(app[['url']], repo)
-                data <- list(timestamp = as.numeric(Sys.time()),
+                data <- list(timestamp = as.numeric(inputTimestampTry),
                              value = input$energyValue,
                              '_oydRepoName' = repoName)
                 writeItem(app, url, data)
